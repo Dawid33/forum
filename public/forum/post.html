@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker news</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="header">
+        <div class="left-header">
+            <div class="heading-and-image">
+                <img src="https://news.ycombinator.com/y18.gif">
+                <strong>
+                    <a href="index.html">Hacker News</a>
+                </strong>
+            </div>
+            <a href="/new">new</a>
+            <a href="/past">past</a>
+            <a href="/comments">comments</a>
+            <a href="/ask">ask</a>
+            <a href="/show">show</a>
+            <a href="/jobs">jobs</a>
+            <a href="/submit">submit</a>
+        </div>
+        <div class="right-header">
+            <a href="login.html">login</a>
+        </div>
+    </div>
+    <main>
+        <div class="post">
+            <a href="https://google.com"><span>This is a link to google</span></a>
+            <a href="https://google.com">(google.com)</a><br />
+            <span class="post-subtext-page">400 points by jim 2 hours age | hide |
+                <a href="post.html">
+                    198 comments
+                </a>
+            </span>
+        </div>
+        <form class="comment-form">
+
+            <textarea id="comment" name="comment" rows="7" cols="80"></textarea><br /><br />
+            <button>add comment</button>
+        </form>
+        <div id="comment-section">
+            <div class="comment">
+                <div class="comment-heading">
+                    <span>
+                        <a class="commenter-username" href="http://user">Username</a>
+                        <span class="time-commented">43 minutes ago</span>
+                        <input type="checkbox" id="collapsible" class="toggle collabsible-input">
+                        <label for="collapsible" class="lbl-toggle"></label>
+                        <div class="collapsible-content">
+                            <div class="content-inner">
+                                <p> This is a comment</p>
+                            </div>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>
