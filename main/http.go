@@ -34,20 +34,23 @@ type Page struct {
 func startHttpServer() {
 	mux := http.NewServeMux()
 	publicFiles := http.FileServer(http.Dir("./public/forum"))
-	consoleFiles := http.FileServer(http.Dir("./public"))
+	consoleFiles := http.FileServer(http.Dir("./public/console-dev"))
+
 	mux.Handle("/", publicFiles)
 	mux.Handle("/console/", http.StripPrefix("/console/", consoleFiles))
-	mux.HandleFunc("/rest/", restHandler)
+	mux.HandleFunc("/api/", restHandler)
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", PORT), mux))
 }
 
 func consoleHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("X-Frame-Options", "DENY")
+	w.Header().Add("MY-HEADER", "COOL")
 	fmt.Fprintf(w, "Hi there, this will be the management forum!")
 }
 
 func restHandler(w http.ResponseWriter, req *http.Request) {
-	requestItem := strings.TrimLeft(req.URL.Path, "/rest/")
+	requestItem := strings.TrimPrefix(req.URL.Path, "/api/")
 	fsPath := strings.Join([]string{"./public/forum/", requestItem},"")
 	content, err := ioutil.ReadFile(fsPath)
 	if err != nil {
