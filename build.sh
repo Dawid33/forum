@@ -1,2 +1,3 @@
 #!/bin/bash
-sudo docker build -t forum/forum:latest .
+(cd backend; sudo docker build -t backend/backend:latest .)
+(cd frontend; sudo docker build -t forum-console/forum-console:latest .)
