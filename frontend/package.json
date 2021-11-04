@@ -16,7 +16,6 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "release": "react-scripts build || rm -r ../public/console && cp -r  build ../public/console",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
