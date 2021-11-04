@@ -14,8 +14,9 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
+    "build-release": "react-scripts build && rm -r ./build/forum-templates && if [ -d '../public/console' ]; then rm -r ../public/console; fi; cp -rf build ../public/console",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

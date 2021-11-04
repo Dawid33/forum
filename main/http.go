@@ -32,9 +32,11 @@ type Page struct {
 }
 
 func startHttpServer() {
+	fmt.Println("Starting HTTP Server!")
+
 	mux := http.NewServeMux()
-	publicFiles := http.FileServer(http.Dir("./public/forum"))
-	consoleFiles := http.FileServer(http.Dir("./public/console-dev"))
+	publicFiles := http.FileServer(http.Dir("./public/forum-templates"))
+	consoleFiles := http.FileServer(http.Dir("./public/console"))
 
 	mux.Handle("/", publicFiles)
 	mux.Handle("/console/", http.StripPrefix("/console/", consoleFiles))
