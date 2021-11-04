@@ -22,6 +22,7 @@ comments</a></span>
 </li>`
 
 var PORT = 3000
+var isDebug = true
 
 type commentRequest struct {
 	Post string
@@ -36,10 +37,11 @@ func startHttpServer() {
 
 	mux := http.NewServeMux()
 	publicFiles := http.FileServer(http.Dir("./public/forum-templates"))
-	consoleFiles := http.FileServer(http.Dir("./public/console"))
-
 	mux.Handle("/", publicFiles)
+
+	consoleFiles := http.FileServer(http.Dir("./public/console"))
 	mux.Handle("/console/", http.StripPrefix("/console/", consoleFiles))
+
 	mux.HandleFunc("/api/", restHandler)
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", PORT), mux))
@@ -47,10 +49,22 @@ func startHttpServer() {
 
 func consoleHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("X-Frame-Options", "DENY")
-	w.Header().Add("MY-HEADER", "COOL")
-	fmt.Fprintf(w, "Hi there, this will be the management forum!")
+	fmt.Println("Accepted console request")
 }
+/*
+func redirect(w http.ResponseWriter, req *http.Request) {
+	// remove/add not default ports from req.Host
+	target := "http://localhost:3001" + req.URL.Path
 
+	if len(req.URL.RawQuery) > 0 {
+		target += "?" + req.URL.RawQuery
+	}
+	fmt.Printf("redirect to: %s", target)
+	http.Redirect(w, req, target,
+		// see comments below and consider the codes 308, 302, or 301
+		http.StatusTemporaryRedirect)
+}
+*/
 func restHandler(w http.ResponseWriter, req *http.Request) {
 	requestItem := strings.TrimPrefix(req.URL.Path, "/api/")
 	fsPath := strings.Join([]string{"./public/forum/", requestItem},"")
