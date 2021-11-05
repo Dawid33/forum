@@ -2,7 +2,6 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://localhost:3000/console",
   "dependencies": {
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^11.2.7",
@@ -16,7 +15,6 @@
   "scripts": {
     "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
-    "build-release": "react-scripts build && rm -r ./build/forum-templates && if [ -d '../public/console' ]; then rm -r ../public/console; fi; cp -rf build ../public/console; cd ../public/console; ln -sf ../forum-templates forum-templates",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

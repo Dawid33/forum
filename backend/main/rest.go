@@ -16,9 +16,12 @@ import (
 func restHandler(w http.ResponseWriter, req *http.Request) {
 
 	// Return
+	/*
 	if req.URL.Query().Has("threadID") {
 
 	}
+
+	 */
 
 	requestItem := strings.TrimPrefix(req.URL.Path, fmt.Sprintf("/%s/", apiPath))
 	fsPath := strings.Join([]string{"./public/forum/", requestItem},"")

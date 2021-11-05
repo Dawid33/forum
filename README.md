@@ -1,0 +1,1 @@
+Run `sudo docker compose up`
