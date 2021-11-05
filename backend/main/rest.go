@@ -53,7 +53,7 @@ func restHandler(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	contentNode, err := getContentNode(doc)
+	contentNode, err := getNodeById(doc)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -91,3 +91,18 @@ func restHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	fmt.Fprintf(w, "Success")
 }
+
+/*
+func redirect(w http.ResponseWriter, req *http.Request) {
+	// remove/add not default ports from req.Host
+	target := "http://localhost:3001" + req.URL.Path
+
+	if len(req.URL.RawQuery) > 0 {
+		target += "?" + req.URL.RawQuery
+	}
+	fmt.Printf("redirect to: %s", target)
+	http.Redirect(w, req, target,
+		// see comments below and consider the codes 308, 302, or 301
+		http.StatusTemporaryRedirect)
+}
+*/

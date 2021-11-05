@@ -5,7 +5,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-func getContentNode(doc *html.Node) (*html.Node, error) {
+func getNodeById(doc *html.Node) (*html.Node, error) {
 	var contentNode *html.Node
 	var crawler func(*html.Node)
 

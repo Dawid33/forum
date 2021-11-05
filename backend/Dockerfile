@@ -13,4 +13,5 @@ COPY forum-templates /backend/forum-templates/
 
 WORKDIR /backend/main
 RUN go build -o backend && mv backend ..
-CMD /backend/backend
+WORKDIR /backend
+CMD ./backend
