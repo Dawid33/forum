@@ -47,6 +47,16 @@ func fileSendHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// Add post to table
+	if req.URL.Query().Has("post") {
+		post := req.URL.Query().Get("post")
+		db, err := ConnectToDB()
+		CheckError(err)
+		_, err = db.Exec("INSERT INTO forum.posts (userid, post) VALUES ($1, $2);", "no_user_id", post)
+		CheckError(err)
+		db.Close()
+	}
+
 	// Send back index file with posts
 	if req.URL.Path == "/" {
 		db, err := ConnectToDB()
@@ -60,16 +70,6 @@ func fileSendHandler(w http.ResponseWriter, req *http.Request) {
 			newContent += fmt.Sprintf(templatePost, post)
 		}
 		fmt.Fprintf(w, addContentToFile("index.html", newContent))
-		db.Close()
-	}
-
-	// Add post to table
-	if req.URL.Query().Has("post") {
-		post := req.URL.Query().Get("post")
-		db, err := ConnectToDB()
-		CheckError(err)
-		_, err = db.Exec("INSERT INTO forum.posts (userid, post) VALUES ($1, $2);", "no_user_id", post)
-		CheckError(err)
 		db.Close()
 	}
 }
