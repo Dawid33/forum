@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "embed"
 	"fmt"
+	"os"
 )
 
 const createSchemaSQL = `
@@ -16,7 +17,6 @@ CREATE TABLE forum.posts {
 `
 
 const (
-	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
 	password = "test"
@@ -24,6 +24,10 @@ const (
 )
 
 func ConnectToDB() (*sql.DB, error) {
+	host := os.Getenv("DB_HOST")
+	if host == "" {
+		host = "localhost"
+	}
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	return sql.Open("postgres", psqlconn)
 }

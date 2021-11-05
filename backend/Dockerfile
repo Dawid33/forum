@@ -1,7 +1,7 @@
 # Build the static files and executable backend
-FROM alpine AS builder
+FROM alpine:edge
 
-RUN apk update
+RUN apk update && apk upgrade
 
 # Install dependencies
 RUN apk add --no-cache go
