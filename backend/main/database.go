@@ -16,14 +16,14 @@ CREATE TABLE forum.posts {
 `
 
 const (
-	host     = "database"
+	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
 	password = "test"
 	dbname   = "postgres"
 )
 
-func connectToDB() (*sql.DB, error) {
+func ConnectToDB() (*sql.DB, error) {
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	return sql.Open("postgres", psqlconn)
 }
@@ -79,9 +79,7 @@ func CheckIfSchemasExists(db *sql.DB, schemas []string) ([]bool, error) {
 
 	return hasSchema, nil
 }
-func checkIfTablesExistInSchema() {
 
-}
 
 func checkDbConnection(db *sql.DB) {
 	err := db.Ping()

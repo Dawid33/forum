@@ -24,7 +24,7 @@ func restHandler(w http.ResponseWriter, req *http.Request) {
 	 */
 
 	requestItem := strings.TrimPrefix(req.URL.Path, fmt.Sprintf("/%s/", apiPath))
-	fsPath := strings.Join([]string{"./public/forum/", requestItem},"")
+	fsPath := strings.Join([]string{"./forum-templates/", requestItem},"")
 	content, err := ioutil.ReadFile(fsPath)
 
 	if err != nil {
@@ -53,7 +53,7 @@ func restHandler(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	contentNode, err := getNodeById(doc)
+	contentNode, err := getNodeById(doc, "posts")
 	if err != nil {
 		log.Fatal(err)
 	}

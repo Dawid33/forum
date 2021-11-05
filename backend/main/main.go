@@ -15,7 +15,7 @@ var f embed.FS
 
 func main() {
 	// Connect to database
-	db, err := connectToDB()
+	db, err := ConnectToDB()
 	if err != nil {
 		fmt.Println(err)
 	}

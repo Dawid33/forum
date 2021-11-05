@@ -1,11 +1,10 @@
 CREATE SCHEMA forum;
 CREATE TABLE forum.users (
-     userid      text,
-     password    text
+    userid      text,
+    password    text
 );
 CREATE TABLE forum.posts (
-     userid      text,
-     postid      text primary key,
-     postDate    date,
-     post        text
+    postid      SERIAL PRIMARY KEY,
+    userid      TEXT NOT NULL ,
+    post        TEXT
 );

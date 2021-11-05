@@ -5,14 +5,14 @@ import (
 	"golang.org/x/net/html"
 )
 
-func getNodeById(doc *html.Node) (*html.Node, error) {
+func getNodeById(doc *html.Node, id string) (*html.Node, error) {
 	var contentNode *html.Node
 	var crawler func(*html.Node)
 
 	crawler = func(node *html.Node) {
 		if node.Type == html.ElementNode {
 			for _, x := range node.Attr {
-				if x.Key == "id" && x.Val == "posts" {
+				if x.Key == "id" && x.Val == id {
 					contentNode = node
 					return
 				}
