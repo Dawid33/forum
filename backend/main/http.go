@@ -13,7 +13,7 @@ import (
 const templatePost = `<li class="post">
 <a href="https://google.com"><span>%s</span></a>
 <a href="https://google.com">(google.com)</a><br/>
-<span class="post-subtext">400 points by jim 2 hours age | hide | <a href="item?id=%d" data-instant>198
+<span class="post-subtext">400 points by jim 2 hours age | hide | <a href="item?id=%d">198
 comments</a></span>
 </li>`
 
@@ -96,17 +96,20 @@ func sendPopulatedHtmlFile(w http.ResponseWriter, req *http.Request) {
 		db, err := ConnectToDB()
 		CheckError(err)
 		rows, err := db.Query("SELECT * FROM forum.posts")
-		var newContent string
+		var newPosts string
+		var prefetchLinks string
 		for rows.Next() {
 			var postid uint64
 			var userid string
 			var post string
 			err = rows.Scan(&postid, &userid, &post)
 			CheckError(err)
-			newContent += fmt.Sprintf(templatePost, post, postid)
+			newPosts += fmt.Sprintf(templatePost, post, postid)
+			prefetchLinks += fmt.Sprintf("	<link rel=\"prefetch\" href=\"item?%d\">\n", postid)
 		}
 		doc := getTemplateFile("index.html")
-		addContentToTagInDoc(doc, "posts", newContent)
+		addContentToTagByIdInDoc(doc, "posts", newPosts)
+		addContentToTagInDoc(doc, "head", prefetchLinks)
 		fmt.Fprintf(w, htmlNodeToString(doc))
 		db.Close()
 	}
@@ -117,7 +120,7 @@ func sendPopulatedHtmlFile(w http.ResponseWriter, req *http.Request) {
 			post, err := GetPost(req.URL.Query().Get("id"))
 			CheckError(err)
 			doc := getTemplateFile("post.html")
-			addContentToTagInDoc(doc, "post", post.post)
+			addContentToTagByIdInDoc(doc, "post", post.post)
 			fmt.Fprintf(w, htmlNodeToString(doc))
 		} else {
 
@@ -125,8 +128,17 @@ func sendPopulatedHtmlFile(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func addContentToTagInDoc(input *html.Node, id string, newContent string) {
+func addContentToTagByIdInDoc(input *html.Node, id string, newContent string) {
 	contentNode, err := getNodeById(input, id)
+	CheckError(err)
+	var newNode = &html.Node{
+		Type:        html.TextNode,
+		Data:        newContent,
+	}
+	contentNode.AppendChild(newNode)
+}
+func addContentToTagInDoc(input *html.Node, id string, newContent string) {
+	contentNode, err := getNodeByTag(input, id)
 	CheckError(err)
 	var newNode = &html.Node{
 		Type:        html.TextNode,
