@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hacker news</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?file">
 </head>
 
 <body>
@@ -31,21 +31,15 @@
         </div>
     </div>
     <main>
-        <div class="post">
-            <a href="https://google.com"><span>This is a link to google</span></a>
-            <a href="https://google.com">(google.com)</a><br />
-            <span class="post-subtext-page">400 points by jim 2 hours age | hide |
-                <a href="post.html">
-                    198 comments
-                </a>
-            </span>
+        <div id="post">
         </div>
-        <form class="comment-form">
 
+        <form class="comment-form">
             <textarea id="comment" name="comment" rows="7" cols="80"></textarea><br /><br />
             <button>add comment</button>
         </form>
-        <div id="comment-section">
+
+        <div id="comments">
             <div class="comment">
                 <div class="comment-heading">
                     <span>

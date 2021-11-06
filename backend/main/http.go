@@ -13,7 +13,7 @@ import (
 const templatePost = `<li class="post">
 <a href="https://google.com"><span>%s</span></a>
 <a href="https://google.com">(google.com)</a><br/>
-<span class="post-subtext">400 points by jim 2 hours age | hide | <a href="post.html">198
+<span class="post-subtext">400 points by jim 2 hours age | hide | <a href="item?id=%d">198
 comments</a></span>
 </li>`
 
@@ -42,6 +42,8 @@ func startHttpServer() {
 
 // Function that handles all regular requests
 func fileSendHandler(w http.ResponseWriter, req *http.Request) {
+	// handle get requests that are not html files.
+	// TODO: this is an awful way to do it, the favicon can't even load with this.
 	if req.URL.Query().Has("file"){
 		serveFiles(w,req)
 		return
@@ -65,48 +67,71 @@ func fileSendHandler(w http.ResponseWriter, req *http.Request) {
 		err = db.Close()
 		CheckError(err)
 	case "GET":
-		sendIndexFileWithPosts(w, req)
+		sendPopulatedHtmlFile(w, req)
 	default:
 		fmt.Fprintf(w, "Cannot handle method %s", req.Method)
 	}
 }
 
-func sendIndexFileWithPosts(w http.ResponseWriter, req *http.Request) {
-	if req.URL.Path == "/" {
+func sendPopulatedHtmlFile(w http.ResponseWriter, req *http.Request) {
+	// Send index file
+	if req.URL.Path == "/" || req.URL.Path == "/index.html"{
 		db, err := ConnectToDB()
 		CheckError(err)
-		rows, err := db.Query("SELECT post FROM forum.posts")
+		rows, err := db.Query("SELECT * FROM forum.posts")
 		var newContent string
 		for rows.Next() {
+			var postid uint64
+			var userid string
 			var post string
-			err = rows.Scan(&post)
+			err = rows.Scan(&postid, &userid, &post)
 			CheckError(err)
-			newContent += fmt.Sprintf(templatePost, post)
+			newContent += fmt.Sprintf(templatePost, post, postid)
 		}
-		fmt.Fprintf(w, addContentToFile("index.html", newContent))
+		doc := getTemplateFile("index.html")
+		addContentToTagInDoc(doc, "posts", newContent)
+		fmt.Fprintf(w, htmlNodeToString(doc))
 		db.Close()
+	}
+	// Query specific comment / post.
+	if req.URL.Path == "/item" {
+		// Search posts to see if I need to load an entire post.
+		if req.URL.Query().Has("id") {
+			post, err := GetPost(req.URL.Query().Get("id"))
+			CheckError(err)
+			doc := getTemplateFile("post.html")
+			addContentToTagInDoc(doc, "post", post.post)
+			fmt.Fprintf(w, htmlNodeToString(doc))
+		} else {
+
+		}
 	}
 }
 
-func addContentToFile(file string, newContent string) string {
-	content, err := ioutil.ReadFile("./forum-templates/" + file)
-	CheckError(err)
-	doc, err := html.Parse(bytes.NewReader(content))
-	CheckError(err)
-	contentNode, err := getNodeById(doc, "posts")
+func addContentToTagInDoc(input *html.Node, id string, newContent string) {
+	contentNode, err := getNodeById(input, id)
 	CheckError(err)
 	var newNode = &html.Node{
 		Type:        html.TextNode,
 		Data:        newContent,
 	}
 	contentNode.AppendChild(newNode)
-
-	buffer := bytes.NewBufferString("")
-	err = html.Render(buffer, doc)
-	output := html.UnescapeString(buffer.String())
-	return output
 }
 
+func getTemplateFile(file string) *html.Node {
+	content, err := ioutil.ReadFile("./forum-templates/" + file)
+	CheckError(err)
+	doc, err := html.Parse(bytes.NewReader(content))
+	CheckError(err)
+	return doc
+}
+
+func htmlNodeToString(input *html.Node) string {
+	buffer := bytes.NewBufferString("")
+	err := html.Render(buffer, input)
+	CheckError(err)
+	return html.UnescapeString(buffer.String())
+}
 
 func serveFiles(w http.ResponseWriter, req *http.Request) {
 	// TODO: This needs a lot of work, but its not neccesary right now.

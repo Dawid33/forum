@@ -1,10 +1,18 @@
 CREATE SCHEMA forum;
 CREATE TABLE forum.users (
-    userid      text,
+    userID      text,
     password    text
 );
 CREATE TABLE forum.posts (
-    postid      SERIAL PRIMARY KEY,
-    userid      TEXT NOT NULL ,
+    postID      SERIAL PRIMARY KEY,
+    userID      TEXT NOT NULL,
     post        TEXT
+);
+CREATE TABLE forum.comments (
+    postID              SERIAL PRIMARY KEY,
+    userID              TEXT NOT NULL,
+    parentCommentID     INT,
+    commentID           SERIAL UNIQUE,
+    comment             TEXT,
+    childComments       INT[]
 );

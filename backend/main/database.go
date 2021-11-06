@@ -14,6 +14,33 @@ const (
 	dbname   = "postgres"
 )
 
+type Post struct {
+	postId uint64
+	userId string
+	post string
+}
+
+func GetPost(id string) (Post, error) {
+	db, err := ConnectToDB()
+	CheckError(err)
+	rows, err := db.Query("SELECT * FROM forum.posts WHERE posts.postID = $1::bigint;", id)
+	CheckError(err)
+	var output Post
+	for rows.Next() {
+		var postid uint64
+		var userid string
+		var post string
+		err = rows.Scan(&postid, &userid, &post)
+		if err != nil {
+			return Post{}, nil
+		}
+		output.postId = postid
+		output.userId = userid
+		output.post = post
+	}
+	return output, nil
+}
+
 func ConnectToDB() (*sql.DB, error) {
 	host := os.Getenv("DB_HOST")
 	if host == "" {

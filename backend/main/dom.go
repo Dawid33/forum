@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"golang.org/x/net/html"
 )
 
@@ -26,5 +27,5 @@ func getNodeById(doc *html.Node, id string) (*html.Node, error) {
 	if contentNode != nil {
 		return contentNode, nil
 	}
-	return nil, errors.New("Missing <content> in the node tree")
+	return nil, errors.New(fmt.Sprintf("Missing id %s in the node tree", id))
 }
