@@ -13,7 +13,7 @@ import (
 const templatePost = `<li class="post">
 <a href="https://google.com"><span>%s</span></a>
 <a href="https://google.com">(google.com)</a><br/>
-<span class="post-subtext">400 points by jim 2 hours age | hide | <a href="item?id=%d">198
+<span class="post-subtext">400 points by jim 2 hours age | hide | <a href="item?id=%d" data-instant>198
 comments</a></span>
 </li>`
 
@@ -42,11 +42,23 @@ func startHttpServer() {
 
 // Function that handles all regular requests
 func fileSendHandler(w http.ResponseWriter, req *http.Request) {
-	// handle get requests that are not html files.
-	// TODO: this is an awful way to do it, the favicon can't even load with this.
-	if req.URL.Query().Has("file"){
-		serveFiles(w,req)
-		return
+	fsPath := ""
+	if strings.HasSuffix(req.URL.Path, ".css")  {
+		w.Header().Set("Content-Type", "text/css")
+		fsPath = "./forum-templates" + req.URL.Path
+	}
+	if strings.HasSuffix(req.URL.Path, ".js")  {
+		w.Header().Set("Content-Type", "application/javascript")
+		fsPath = "./forum-templates" + req.URL.Path
+	}
+	if strings.HasSuffix(req.URL.Path, ".ico") {
+		fsPath = "./forum-templates" + req.URL.Path
+	}
+	if strings.HasSuffix(req.URL.Path, ".html") {
+		fsPath = "./forum-templates" + req.URL.Path
+	}
+	if fsPath != "" {
+		http.ServeFile(w, req, fsPath)
 	}
 
 	switch req.Method {
@@ -67,20 +79,20 @@ func fileSendHandler(w http.ResponseWriter, req *http.Request) {
 		err = db.Close()
 		CheckError(err)
 	case "GET":
+
 		sendPopulatedHtmlFile(w, req)
+
 	default:
 		fmt.Fprintf(w, "Cannot handle method %s", req.Method)
 	}
 }
 
 func sendPopulatedHtmlFile(w http.ResponseWriter, req *http.Request) {
-	// Send index file
 	if req.URL.Path == "/index.html" {
 		http.Redirect(w, req, "/", http.StatusMovedPermanently)
 		return
 	}
 	if req.URL.Path == "/"{
-
 		db, err := ConnectToDB()
 		CheckError(err)
 		rows, err := db.Query("SELECT * FROM forum.posts")
@@ -136,17 +148,4 @@ func htmlNodeToString(input *html.Node) string {
 	err := html.Render(buffer, input)
 	CheckError(err)
 	return html.UnescapeString(buffer.String())
-}
-
-func serveFiles(w http.ResponseWriter, req *http.Request) {
-	// TODO: This needs a lot of work, but its not neccesary right now.
-	fsPath := ""
-	if strings.HasSuffix(req.URL.Path, ".css")  {
-		w.Header().Set("Content-Type", "text/css")
-		fsPath = "./forum-templates" + req.URL.Path
-	}
-	if strings.HasSuffix(req.URL.Path, ".ico") {
-		fsPath = "./forum-templates" + req.URL.Path
-	}
-	http.ServeFile(w, req, fsPath)
 }

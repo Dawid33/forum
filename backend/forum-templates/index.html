@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="index.css?file" />
   </head>
 
-  <body>
+  <body data-instant-intensity="mousedown" data-instant-allow-query-string data-instant-mousedown-shortcut>
     <header>
         <a href="/">L337 C0D3R F0RUM</a>
         <a href="/new">new</a>
@@ -25,7 +25,9 @@
         <textarea name="text" rows="6" cols="60">Default text</textarea>
         <br /><br /><input type="submit" value="add comment" />
       </form>
+      <a href="/test.html" data-instant>Test</a>
       <ol id="posts"><!-- Will be populated --></ol>
     </main>
+    <script src="instantpage.js?file" type="module" defer></script>
   </body>
 </html>
