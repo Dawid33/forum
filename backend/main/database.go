@@ -7,15 +7,6 @@ import (
 	"os"
 )
 
-const createSchemaSQL = `
-CREATE SCHEMA IF NOT EXISTS forum
-CREATE TABLE forum.posts {
-	userid	text
-	postid 	text PRIMARY
-	post	text
-}
-`
-
 const (
 	port     = 5432
 	user     = "postgres"

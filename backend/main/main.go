@@ -25,19 +25,19 @@ func main() {
 			log.Println("Cannot connect to database, trying again.")
 			time.Sleep(time.Second * 1)
 		} else {
-			break;
+			break
 		}
 	}
-
-
-	defer db.Close()
 
 	var schemas = []string{
 		"forum",
 	}
+	// Reset database at restart
 	CheckError(DropAllSchemas(db, schemas))
 	CheckError(CreateMissingSchemas(db, schemas))
 	db.Close()
+	CheckError(err)
+
 
 	startHttpServer()
 }
