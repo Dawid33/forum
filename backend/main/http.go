@@ -47,17 +47,31 @@ func fileSendHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Add post to table
-	if req.URL.Query().Has("post") {
-		post := req.URL.Query().Get("post")
+	switch req.Method {
+	case "POST":
+		// Redirect after POST
+		defer http.Redirect(w, req, "/", http.StatusMovedPermanently)
+
+		err := req.ParseForm()
+		if err != nil {
+			fmt.Fprintf(w, "Cannot parse form: %v", err)
+			return
+		}
+		text := req.FormValue("text")
 		db, err := ConnectToDB()
 		CheckError(err)
-		_, err = db.Exec("INSERT INTO forum.posts (userid, post) VALUES ($1, $2);", "no_user_id", post)
+		_, err = db.Exec("INSERT INTO forum.posts (userid, post) VALUES ($1, $2);", "no_user_id", text)
 		CheckError(err)
-		db.Close()
+		err = db.Close()
+		CheckError(err)
+	case "GET":
+		sendIndexFileWithPosts(w, req)
+	default:
+		fmt.Fprintf(w, "Cannot handle method %s", req.Method)
 	}
+}
 
-	// Send back index file with posts
+func sendIndexFileWithPosts(w http.ResponseWriter, req *http.Request) {
 	if req.URL.Path == "/" {
 		db, err := ConnectToDB()
 		CheckError(err)
