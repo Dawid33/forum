@@ -5,7 +5,6 @@ import (
 	"fmt"
 	_ "github.com/lib/pq"
 	"log"
-	"time"
 )
 
 //go:embed sql/checkIfSchemaExists.sql
@@ -15,30 +14,15 @@ var f embed.FS
 
 func main() {
 	// Connect to database
-	db, err := ConnectToDB()
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	for {
-		if err := db.Ping(); err != nil {
-			log.Println("Cannot connect to database, trying again.")
-			time.Sleep(time.Second * 1)
-		} else {
-			break
-		}
-	}
-
+	db := connectToDB()
 	var schemas = []string{
 		"forum",
 	}
-	// Reset database at restart
-	CheckError(DropAllSchemas(db, schemas))
-	CheckError(CreateMissingSchemas(db, schemas))
-	db.Close()
+	fmt.Println("Deleting all schemas for clean slate...")
+	DropAllSchemas(db, schemas)
+	CreateMissingSchemas(db, schemas)
+	err := db.Close()
 	CheckError(err)
-
-
 	startHttpServer()
 }
 
@@ -47,8 +31,21 @@ func GetSQLFile(name string) string {
 	return string(data)
 }
 
+// CheckError Review and replace this function wherever possible
 func CheckError(err error) {
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
+	}
+}
+
+func PrintError(err error)  {
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func Panic(err error) {
+	if err != nil {
+		log.Fatal(err)
 	}
 }

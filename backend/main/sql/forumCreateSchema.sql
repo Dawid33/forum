@@ -4,15 +4,17 @@ CREATE TABLE forum.users (
     password    text
 );
 CREATE TABLE forum.posts (
-    postID      SERIAL PRIMARY KEY,
+    threadID    SERIAL UNIQUE PRIMARY KEY,
     userID      TEXT NOT NULL,
-    post        TEXT
+    title       TEXT,
+    content     TEXT
 );
 CREATE TABLE forum.comments (
-    postID              SERIAL PRIMARY KEY,
+    commentID           SERIAL UNIQUE PRIMARY KEY,
+    threadID            INT,
+    parentID            INT,
+    kidsID              INT[],
     userID              TEXT NOT NULL,
-    parentCommentID     INT,
-    commentID           SERIAL UNIQUE,
-    comment             TEXT,
-    childComments       INT[]
+    content             TEXT,
+    FOREIGN KEY (threadID) REFERENCES forum.posts(threadID)
 );

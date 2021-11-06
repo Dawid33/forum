@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hacker news</title>
-    <link rel="stylesheet" href="base.css?" />
-    <link rel="stylesheet" href="index.css?" />
+    <link rel="stylesheet" href="base.css" />
+    <link rel="stylesheet" href="index.css" />
   </head>
 
   <body data-instant-intensity="mousedown-only" data-instant-mousedown-shortcut>
@@ -21,12 +21,11 @@
         <a href="/submit">submit</a>
     </header>
     <main>
-      <form method="post" action="/">
-        <textarea name="text" rows="6" cols="60">Default text</textarea>
+      <form method="post" action="/post">
+        <textarea name="text" rows="6" cols="60">This is the default text for a post</textarea>
         <br /><br /><input type="submit" value="add comment" />
       </form>
       <ol id="posts"><!-- Will be populated --></ol>
     </main>
-    <script src="instantpage.js?" type="module" defer></script>
   </body>
 </html>

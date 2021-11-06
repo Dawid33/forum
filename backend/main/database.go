@@ -3,8 +3,11 @@ package main
 import (
 	"database/sql"
 	_ "embed"
+	"errors"
 	"fmt"
+	"log"
 	"os"
+	"time"
 )
 
 const (
@@ -14,56 +17,90 @@ const (
 	dbname   = "postgres"
 )
 
-type Post struct {
-	postId uint64
+type Thread struct {
+	threadId uint64
 	userId string
-	post string
+	title string
+	content string
 }
 
-func GetPost(id string) (Post, error) {
-	db, err := ConnectToDB()
-	CheckError(err)
-	rows, err := db.Query("SELECT * FROM forum.posts WHERE posts.postID = $1::bigint;", id)
-	CheckError(err)
-	var output Post
+func getThread(threadId string) (Thread, error) {
+	db := connectToDB()
+	rows, err := db.Query("SELECT * FROM forum.posts WHERE posts.threadID = $1::bigint;", threadId)
+	if err != nil {
+		return Thread{}, nil
+	}
+	var output Thread
+	hasRows := false
 	for rows.Next() {
+		hasRows = true
 		var postid uint64
 		var userid string
-		var post string
-		err = rows.Scan(&postid, &userid, &post)
+		var title string
+		var content string
+		err = rows.Scan(&postid, &userid, &title, &content)
 		if err != nil {
-			return Post{}, nil
+			return Thread{}, nil
 		}
-		output.postId = postid
+		output.threadId = postid
 		output.userId = userid
-		output.post = post
+		output.title = title
+		output.content = content
+	}
+	if !hasRows {
+		return output, errors.New(fmt.Sprintf("Cannot find thread with id : %s", threadId))
 	}
 	return output, nil
 }
 
-func ConnectToDB() (*sql.DB, error) {
+func getCommentsInThread(db *sql.DB, threadId string) (string, error) {
+	rows, err := db.Query("SELECT userID, content FROM forum.comments WHERE comments.threadID = $1::bigint;", threadId)
+	if err != nil {
+		return "", err
+	}
+	var output = ""
+	for rows.Next() {
+		var userId string
+		var content string
+		err = rows.Scan(&userId, &content)
+		if err != nil {
+			return "", err
+		}
+		output += fmt.Sprintf(templateComment, userId, content)
+	}
+	return output, nil
+}
+
+func connectToDB() *sql.DB {
 	host := os.Getenv("DB_HOST")
 	if host == "" {
 		host = "localhost"
 	}
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-	return sql.Open("postgres", psqlconn)
+	for {
+		conn, err := sql.Open("postgres", psqlconn)
+		if err != nil {
+			log.Println("Cannot connect to database, trying again...")
+			time.Sleep(time.Second * 2)
+		} else {
+			return conn
+		}
+	}
 }
 
-func DropAllSchemas(db* sql.DB, schemas []string) error {
+// DropAllSchemas This function must succeed, so it can panic all it wants.
+func DropAllSchemas(db* sql.DB, schemas []string) {
 	for _, x := range schemas {
 		// TODO: Make this work without Sprintf
 		_, err := db.Exec(fmt.Sprintf("drop schema if exists %s cascade;", x))
-		if err != nil {
-			return err
-		}
+		Panic(err)
 	}
-	return nil
 }
 
-func CreateMissingSchemas(db *sql.DB, schemas []string) error {
+// CreateMissingSchemas This function must succeed, so it can panic all it wants.
+func CreateMissingSchemas(db *sql.DB, schemas []string) {
 	exists, err := CheckIfSchemasExists(db, schemas)
-	CheckError(err)
+	Panic(err)
 	for i, x := range exists {
 		if x {
 			fmt.Printf("%s : YES\n", schemas[i])
@@ -72,12 +109,9 @@ func CreateMissingSchemas(db *sql.DB, schemas []string) error {
 			fmt.Printf("Creating %s Schema...\n", schemas[i])
 			query := GetSQLFile(fmt.Sprintf("%sCreateSchema", schemas[i]))
 			_, err := db.Exec(query)
-			if err != nil {
-				return err
-			}
+			Panic(err)
 		}
 	}
-	return nil
 }
 
 func CheckIfSchemasExists(db *sql.DB, schemas []string) ([]bool, error) {
@@ -100,10 +134,4 @@ func CheckIfSchemasExists(db *sql.DB, schemas []string) ([]bool, error) {
 	}
 
 	return hasSchema, nil
-}
-
-
-func checkDbConnection(db *sql.DB) {
-	err := db.Ping()
-	CheckError(err)
 }
