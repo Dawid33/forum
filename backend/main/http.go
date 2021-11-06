@@ -75,7 +75,12 @@ func fileSendHandler(w http.ResponseWriter, req *http.Request) {
 
 func sendPopulatedHtmlFile(w http.ResponseWriter, req *http.Request) {
 	// Send index file
-	if req.URL.Path == "/" || req.URL.Path == "/index.html"{
+	if req.URL.Path == "/index.html" {
+		http.Redirect(w, req, "/", http.StatusMovedPermanently)
+		return
+	}
+	if req.URL.Path == "/"{
+
 		db, err := ConnectToDB()
 		CheckError(err)
 		rows, err := db.Query("SELECT * FROM forum.posts")

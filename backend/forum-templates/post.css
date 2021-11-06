@@ -1,0 +1,55 @@
+.comment-form {
+  margin-top: 1rem;
+}
+
+.comment-heading {
+  font-size: small;
+}
+
+.commenter-username {
+  text-decoration: none;
+}
+
+.commenter-username:visited {
+  color: black;
+}
+.commenter-username:link {
+  color: grey;
+}
+input[type="checkbox"].collabsible-input {
+  display: none;
+}
+.wrap-collabsible {
+  margin: 1.2rem 0;
+}
+.lbl-toggle {
+  cursor: pointer;
+  transition: all 0.25s ease-out;
+}
+
+.lbl-toggle::before {
+  content: "[+]";
+  display: inline-block;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  vertical-align: middle;
+  transform: translateY(-2px);
+  transition: transform 0.2s ease-out;
+}
+
+.toggle:not(:checked) + .lbl-toggle::before {
+  content: "[-]";
+}
+
+.collapsible-content {
+  max-height: 0px;
+  overflow: hidden;
+  transition: max-height 0.25s ease-in-out;
+}
+.toggle:not(:checked) + .lbl-toggle + .collapsible-content {
+  max-height: 350px;
+}
+
+.collapsible-content p {
+  margin-bottom: 0;
+}
