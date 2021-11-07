@@ -19,16 +19,11 @@ func main() {
 		"forum",
 	}
 	fmt.Println("Deleting all schemas for clean slate...")
-	DropAllSchemas(db, schemas)
+	//DropAllSchemas(db, schemas)
 	CreateMissingSchemas(db, schemas)
 	err := db.Close()
 	CheckError(err)
 	startHttpServer()
-}
-
-func GetSQLFile(name string) string {
-	data, _ := f.ReadFile(fmt.Sprintf("sql/%s.sql",name))
-	return string(data)
 }
 
 // CheckError Review and replace this function wherever possible
@@ -40,7 +35,7 @@ func CheckError(err error) {
 
 func PrintError(err error)  {
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 }
 

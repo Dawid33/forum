@@ -6,6 +6,7 @@ CREATE TABLE forum.users (
 CREATE TABLE forum.posts (
     threadID    SERIAL UNIQUE PRIMARY KEY,
     userID      TEXT NOT NULL,
+    category    TEXT NOT NULL,
     title       TEXT,
     content     TEXT
 );

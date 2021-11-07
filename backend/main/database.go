@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	_ "embed"
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -24,31 +23,31 @@ type Thread struct {
 	content string
 }
 
-func getThread(threadId string) (Thread, error) {
+func getThreadsWithCategory(category string) ([]Thread, error) {
 	db := connectToDB()
-	rows, err := db.Query("SELECT * FROM forum.posts WHERE posts.threadID = $1::bigint;", threadId)
+	rows, err := db.Query("SELECT * FROM forum.posts WHERE posts.category = $1::text;", category)
 	if err != nil {
-		return Thread{}, nil
+		return []Thread{}, nil
 	}
-	var output Thread
-	hasRows := false
+	var output []Thread
 	for rows.Next() {
-		hasRows = true
+		var thread Thread
 		var postid uint64
 		var userid string
+		var category string
 		var title string
 		var content string
-		err = rows.Scan(&postid, &userid, &title, &content)
+		err = rows.Scan(&postid, &userid, &category, &title, &content)
 		if err != nil {
-			return Thread{}, nil
+			return []Thread{}, nil
 		}
-		output.threadId = postid
-		output.userId = userid
-		output.title = title
-		output.content = content
-	}
-	if !hasRows {
-		return output, errors.New(fmt.Sprintf("Cannot find thread with id : %s", threadId))
+
+		thread.threadId = postid
+		thread.userId = userid
+		thread.title = title
+		thread.content = content
+
+		output = append(output, thread)
 	}
 	return output, nil
 }
@@ -66,7 +65,7 @@ func getCommentsInThread(db *sql.DB, threadId string) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		output += fmt.Sprintf(templateComment, userId, content)
+		output += "test"
 	}
 	return output, nil
 }

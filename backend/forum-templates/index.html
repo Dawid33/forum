@@ -21,11 +21,8 @@
         <a href="/submit">submit</a>
     </header>
     <main>
-      <form method="post" action="/post">
-        <textarea name="text" rows="6" cols="60">This is the default text for a post</textarea>
-        <br /><br /><input type="submit" value="add comment" />
-      </form>
-      <ol id="posts"><!-- Will be populated --></ol>
+      <div file thread_form ></div>
+      <ol query type="threads" category="default" template="thread" title userid threadid ></ol>
     </main>
   </body>
 </html>
