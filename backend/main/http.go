@@ -38,9 +38,13 @@ func fileSendHandler(w http.ResponseWriter, req *http.Request) {
 
 		switch req.URL.Path {
 		case "/post-thread":
-			acceptNewThread(connectToDB(), w, req)
+			db := connectToDB()
+			acceptNewThread(db, w, req)
+			db.Close()
 		case "/post-comment":
-			acceptNewComment(connectToDB(), w, req)
+			db := connectToDB()
+			acceptNewComment(db, w, req)
+			db.Close()
 		default:
 			redirectToUrl(w, req, "404.html")
 		}

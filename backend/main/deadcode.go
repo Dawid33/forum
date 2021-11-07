@@ -38,7 +38,7 @@ func serveThreadFile (w http.ResponseWriter, req *http.Request) {
 			}
 			comments, err := getCommentsInThread(connectToDB(), id)
 
-		doc := getTemplateFile("thread_page.html")
+		doc := getTemplateFile("thread.html")
 
 
 		addContentToTagByIdInDoc(doc, "comment-form", fmt.Sprintf(getSubTemplateFile("comment_form.html"), post.threadId, 0, post.threadId))

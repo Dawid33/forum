@@ -18,7 +18,7 @@ const (
 )
 
 var validQueries = []string {
-	"id",
+	"threadid",
 }
 
 type QueryParameter struct {
@@ -108,9 +108,9 @@ func parseAttributes(node *html.Node, req *http.Request) (Query, error) {
 			output.queryType = DatabaseQuery
 		default:
 			// If the requested data starts with ?, it must come from the url.
-			if strings.HasPrefix(attr.Key, "?") {
+			if strings.HasPrefix(attr.Key, "?") || strings.HasPrefix(attr.Val, "?") {
 				for _, x := range validQueries {
-					if "?" + x == attr.Key {
+					if "?" + x == attr.Key || "?" + x == attr.Val && req.URL.Query().Has(x){
 						parameter := QueryParameter{key: attr.Key, value: req.URL.Query().Get(x)}
 						output.params = append(output.params, parameter)
 						break
@@ -121,7 +121,6 @@ func parseAttributes(node *html.Node, req *http.Request) (Query, error) {
 			}
 		}
 	}
-
 
 	if output.queryType == Undefined {
 		return Query{}, errors.New("cannot parse attributes")
@@ -135,12 +134,13 @@ func fulfillQuery(node *html.Node, query Query) error {
 		for _, x := range query.params {
 			fmt.Println("Getting file : ", x.key + ".html")
 			content := getSubTemplateFile(x.key + ".html")
-			addContentToNode(node, content)
+			replaceNodeWithContent(node, content)
 		}
 	case DatabaseQuery:
 		var requestedDataType = ""
 		var category = ""
 		var template = ""
+		var threadid = ""
 		var requestedData []QueryParameter
 		for _, x := range query.params {
 			switch x.key {
@@ -148,62 +148,60 @@ func fulfillQuery(node *html.Node, query Query) error {
 				requestedDataType = x.value
 			case "category":
 				category = x.value
-			case "orderby":
-				//TODO order requested info
 			case "template":
 				template = x.value
+			case "?threadid":
+				requestedData = append(requestedData, QueryParameter{
+					key: x.key,
+					value: x.value,
+				})
 			default:
+				if x.value != "" && x.key == "threadid" {
+					threadid = x.value
+				}
 				// If there is no key / value pair, must be the requested information
 				// Or if it starts with ?, the information must come from url
 				if x.value == "" {
 					requestedData = append(requestedData, QueryParameter{
-						key: x.key,
+						key:   x.key,
 						value: "",
-					})
-				}
-				if strings.HasPrefix(x.value, "?") {
-					requestedData = append(requestedData, QueryParameter{
-						key: x.key,
-						value: x.value,
 					})
 				}
 			}
 		}
 
 		// Must fulfill basic requirements for db query
-		if requestedDataType != "" && requestedData != nil {
+		if requestedData != nil {
 			var file = ""
 			if template != "" {
 				newFile := getSubTemplateFile(template + ".html")
 				file = newFile
 			} else if node.FirstChild != nil {
-				start := node.FirstChild
-				var output string
-				for start != nil {
-					output += htmlToString(start)
-					start = start.NextSibling
-					if start == node.FirstChild {
-						break
-					}
-				}
 				// Get data and orphan child as we will be replacing it with data.
+				file = getContentFromNode(node)
 				node.FirstChild = nil
 				node.LastChild = nil
-				file = output
 			}
 
 			var newContent string
 			switch requestedDataType {
 			case "threads":
 				var threads []Thread
-				// DB Query here.
+				// TODO: Allow more complex queries
+				var err error = nil
 				if category != "" {
-					newThreads, err := getThreadsWithCategory(category)
-					threads = newThreads
-					PrintError(err)
+					categoryQuery := fmt.Sprintf("WHERE posts.category = '%s'", category)
+					db := connectToDB()
+					threads, err = getThreads(db, categoryQuery)
+					db.Close()
 				} else {
-					//TODO: Get all threads in the database
-					threads = []Thread{}
+					db := connectToDB()
+					threads, err = getThreads(db, "")
+					db.Close()
+				}
+				if err != nil {
+					PrintError(err)
+					return err
 				}
 
 				for _, x := range threads {
@@ -224,6 +222,7 @@ func fulfillQuery(node *html.Node, query Query) error {
 							}
 						}
 					}
+
 					dbInfoInterface := make([]interface{}, len(dbInfo))
 					for i, v := range dbInfo {
 						dbInfoInterface[i] = v
@@ -233,10 +232,58 @@ func fulfillQuery(node *html.Node, query Query) error {
 					newContent += newItem
 				}
 			case "comments":
+				db := connectToDB()
+				query := fmt.Sprintf("WHERE comments.threadid = %s", threadid)
+				comments, err := getComments(db, query)
+				db.Close()
+				if err != nil {
+					PrintError(err)
+					return err
+				}
 
+				for _, x := range comments {
+					var dbInfo []string
+					for _, y := range requestedData {
+						switch y.key {
+						case "content":
+							dbInfo = append(dbInfo, x.content)
+						case "userid":
+							dbInfo = append(dbInfo, x.userId)
+						default:
+							if strings.HasPrefix(y.key, "?") {
+								dbInfo = append(dbInfo, y.value)
+							}
+						}
+					}
+
+					dbInfoInterface := make([]interface{}, len(dbInfo))
+					for i, v := range dbInfo {
+						dbInfoInterface[i] = v
+					}
+
+					newItem := fmt.Sprintf(file, dbInfoInterface...)
+					newContent += newItem
+				}
+			default:
+
+				var dbInfo []string
+				for _, y := range requestedData {
+					switch y.key {
+					default:
+						if strings.HasPrefix(y.key, "?") {
+							dbInfo = append(dbInfo, y.value)
+						}
+					}
+				}
+
+				dbInfoInterface := make([]interface{}, len(dbInfo))
+				for i, v := range dbInfo {
+					dbInfoInterface[i] = v
+				}
+
+				newContent = fmt.Sprintf(file, dbInfoInterface...)
 			}
-
-			addContentToNode(node, newContent)
+			replaceNodeWithContent(node, newContent)
 		}
 	default:
 		return errors.New("cannot recognise query")
@@ -244,12 +291,27 @@ func fulfillQuery(node *html.Node, query Query) error {
 	return nil
 }
 
-func addContentToNode(input *html.Node, newContent string) {
-	var newNode = &html.Node{
-		Type:        html.TextNode,
-		Data:        newContent,
+func getContentFromNode(node *html.Node) string {
+	if node.FirstChild == nil {
+		return ""
 	}
-	input.AppendChild(newNode)
+	start := node.FirstChild
+	var output string
+	for start != nil {
+		output += htmlToString(start)
+		start = start.NextSibling
+		if start == node.FirstChild {
+			break
+		}
+	}
+	return output
+}
+
+func replaceNodeWithContent(input *html.Node, newContent string) {
+	input.FirstChild = nil
+	input.LastChild = nil
+	input.Type = html.TextNode
+	input.Data = newContent
 }
 
 func htmlToString(input *html.Node) string {

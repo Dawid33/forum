@@ -25,17 +25,7 @@ func getTemplateFile(file string) *html.Node {
 func getSubTemplateFile(file string) string {
 	doc := getTemplateFile(file)
 	// Parsing html adds stuff that doesn't exist in the file.
-	// TODO: Make this more efficent
 	doc, err := getNodeByTag(doc, "body")
 	Panic(err)
-	start := doc.FirstChild
-	var output string
-	for start != nil {
-		output += htmlToString(start)
-		start = start.NextSibling
-		if start == doc.FirstChild {
-			break
-		}
-	}
-	return output
+	return getContentFromNode(doc)
 }

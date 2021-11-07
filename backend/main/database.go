@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "embed"
 	"fmt"
+	"github.com/lib/pq"
 	"log"
 	"os"
 	"time"
@@ -19,19 +20,28 @@ const (
 type Thread struct {
 	threadId uint64
 	userId string
+	category string
 	title string
 	content string
 }
+type Comment struct {
+	commentId string
+	threadId int
+	parentId int
+	kidsId []int
+	userId string
+	content string
+}
 
-func getThreadsWithCategory(category string) ([]Thread, error) {
-	db := connectToDB()
-	rows, err := db.Query("SELECT * FROM forum.posts WHERE posts.category = $1::text;", category)
+func getThreads(db *sql.DB, whereClause string) ([]Thread, error) {
+	query := "SELECT * FROM forum.posts " + whereClause + ";"
+
+	rows, err := db.Query(query)
 	if err != nil {
 		return []Thread{}, nil
 	}
 	var output []Thread
 	for rows.Next() {
-		var thread Thread
 		var postid uint64
 		var userid string
 		var category string
@@ -41,31 +51,43 @@ func getThreadsWithCategory(category string) ([]Thread, error) {
 		if err != nil {
 			return []Thread{}, nil
 		}
-
-		thread.threadId = postid
-		thread.userId = userid
-		thread.title = title
-		thread.content = content
-
-		output = append(output, thread)
+		output = append(output, Thread{
+			threadId: postid,
+			userId:   userid,
+			category: category,
+			title:    title,
+			content:  content,
+		})
 	}
 	return output, nil
 }
 
-func getCommentsInThread(db *sql.DB, threadId string) (string, error) {
-	rows, err := db.Query("SELECT userID, content FROM forum.comments WHERE comments.threadID = $1::bigint;", threadId)
+func getComments(db *sql.DB, whereClause string) ([]Comment, error) {
+	query := "SELECT * FROM forum.comments " + whereClause + ";"
+	rows, err := db.Query(query)
 	if err != nil {
-		return "", err
+		return []Comment{}, err
 	}
-	var output = ""
+	var output []Comment
 	for rows.Next() {
+		var commentId string
+		var threadId int
+		var parentId int
+		var kidsId []int
 		var userId string
 		var content string
-		err = rows.Scan(&userId, &content)
+		err = rows.Scan(&commentId, &threadId, &parentId, pq.Array(&kidsId), &userId, &content)
 		if err != nil {
-			return "", err
+			return []Comment{}, err
 		}
-		output += "test"
+		output = append(output, Comment {
+			commentId: commentId,
+			threadId: threadId,
+			parentId: parentId,
+			kidsId: kidsId,
+			userId: userId,
+			content: content,
+		})
 	}
 	return output, nil
 }

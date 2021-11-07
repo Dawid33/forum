@@ -35,3 +35,25 @@ main > ol > li {
   list-style-position: inside;
   margin-left: -2rem;
 }
+
+.post {
+  margin-bottom: 0.5rem;
+  color: grey;
+}
+.post a {
+  text-decoration: none;
+}
+.post a:link {
+  color: black;
+}
+.post a:visited {
+  color: grey;
+}
+.post-subtext,
+.post-subtext-page {
+  font-size: small;
+}
+
+.post-subtext {
+  margin-left: 1.5rem;
+}

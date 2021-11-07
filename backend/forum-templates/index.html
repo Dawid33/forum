@@ -1,28 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hacker news</title>
-    <link rel="stylesheet" href="base.css" />
-    <link rel="stylesheet" href="index.css" />
-  </head>
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Hacker news</title>
+	<link rel="stylesheet" href="base.css" />
+	<script query type="threads" category="default" threadid>
+		<link rel="prefetch" href="thread?threadid=%s">
+	</script>
+</head>
 
-  <body data-instant-intensity="mousedown-only" data-instant-mousedown-shortcut>
-    <header>
-        <a href="/">L337 C0D3R F0RUM</a>
-        <a href="/new">new</a>
-        <a href="/past">past</a>
-        <a href="/comments">comments</a>
-        <a href="/ask">ask</a>
-        <a href="/show">show</a>
-        <a href="/jobs">jobs</a>
-        <a href="/submit">submit</a>
-    </header>
-    <main>
-      <div file thread_form ></div>
-      <ol query type="threads" category="default" template="thread" title userid threadid ></ol>
-    </main>
-  </body>
+<html lang="en">
+	<body>
+		<header>
+			<a href="/">L337 C0D3R F0RUM</a>
+			<a href="/">new</a>
+			<a href="/">past</a>
+			<a href="/">comments</a>
+			<a href="/">ask</a>
+			<a href="/">show</a>
+			<a href="/">jobs</a>
+			<a href="/">submit</a>
+		</header>
+
+		<main>
+			<form method="post" action="/post-thread">
+				<input type="text" name="title" value="This is the default title"/>
+				<br />
+				<textarea name="text" rows="6" cols="60">This is the default text for a post</textarea>
+				<br />
+				<input type="submit" value="add comment" />
+			</form>
+
+			<ol>
+				<div query type="threads" category="default" threadid title userid threadid >
+					<li class="post">
+						<a href="thread?id=%s"><span>%s</span></a>
+						<br/>
+						<span class="post-subtext">400 points by %s 2 hours age | hide | <a href="thread?threadid=%s">198 comments</a></span>
+					</li>
+				</div>
+			</ol>
+		</main>
+	</body>
 </html>
