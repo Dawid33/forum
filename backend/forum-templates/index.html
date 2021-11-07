@@ -5,11 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hacker news</title>
-    <link rel="stylesheet" href="base.css?file" />
-    <link rel="stylesheet" href="index.css?file" />
+    <link rel="stylesheet" href="base.css" />
+    <link rel="stylesheet" href="index.css" />
   </head>
 
-  <body>
+  <body data-instant-intensity="mousedown-only" data-instant-mousedown-shortcut>
     <header>
         <a href="/">L337 C0D3R F0RUM</a>
         <a href="/new">new</a>
@@ -21,11 +21,8 @@
         <a href="/submit">submit</a>
     </header>
     <main>
-      <form method="post" action="/">
-        <textarea name="text" rows="6" cols="60">Default text</textarea>
-        <br /><br /><input type="submit" value="add comment" />
-      </form>
-      <ol id="posts"><!-- Will be populated --></ol>
+      <div file thread_form ></div>
+      <ol query type="threads" category="default" template="thread" title userid threadid ></ol>
     </main>
   </body>
 </html>
