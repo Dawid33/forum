@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-const PORT = 80
+const PORT = 3000
 
 type commentRequest struct {
 	Thread string
