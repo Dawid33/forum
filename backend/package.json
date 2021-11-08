@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "esbuild javascript/thread.js --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16 --outfile=forum-templates/thread.js"
+    "build": "esbuild javascript/thread.js --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16 --outfile=public/thread.js"
   },
   "keywords": [],
   "author": "",

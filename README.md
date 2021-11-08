@@ -11,3 +11,6 @@ Only allow connection to the docker instance from 127.0.0.1 \
 ## Documentation W.I.P
 <attiribute> <query>
 
+## TODO
+* Sanitize html from the user.
+

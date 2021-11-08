@@ -6,9 +6,34 @@
     padding-left: 1rem;
 }
 
+.editor {
+    width: 95%;
+    height: 300px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    margin: 2.5%;
+    background-color: beige;
+}
+
 .comment-form {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    padding: 5%;
+    width: 90%;
+    grid-column: 1;
+}
+
+#in {
+    resize: none;
+    width: 100%;
+    height: 100%;
+}
+
+#out {
+    margin: 5%;
+    width: 90%;
+    background-color: white;
+    grid-column: 2;
+    overflow: auto;
 }
 
 .comment {
@@ -16,7 +41,6 @@
 }
 
 .comment-heading {
-  font-size: small;
 }
 
 .commenter-username {

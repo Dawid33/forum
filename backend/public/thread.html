@@ -22,45 +22,25 @@
         </div>
 
         <div query ?threadid ?threadid ?threadid>
-          <form class="comment-form" method="post" action="/post-comment">
-            <input type="hidden" name="thread" value="%s" />
-            <input type="hidden" name="parentId" value="%s" />
-            <input type="hidden" name="goto" value="thread?threadid=%s" />
-            <textarea id="in" placeholder="Markdown" name="text" rows="6" cols="60">
-## Snarkdown
+          <div class="editor">
+            <form class="comment-form" method="post" action="/post-comment">
+              <input type="hidden" name="thread" value="%s" />
+              <input type="hidden" name="parentId" value="%s" />
+              <input type="hidden" name="goto" value="thread?threadid=%s" />
+              <textarea id="in" placeholder="Write your comment here" name="text" rows="6" cols="60"></textarea>
+              <input id="js-text" type="hidden" name="js-text" value="">
+              <input type="submit" value="add comment" />
+            </form>
 
-![snarkdown](http://emojipop.net/data/images/emoji_set_77.png)
-
-*[Snarkdown](http://github.com/developit/snarkdown)* is __easy__ to `use`!
-
-Here's an [**important** anchor link](#example).
-
-Two newlines creates a line break.
-
-Or, end a line with two spaces.
-Just like that!
-
-```JavaScript
-function codeBlocks() {
-    return 'Can be inserted';
-}
-```
-            </textarea>
-            <br /><br />
-            <input type="submit" value="add comment" />
-          </form>
+            <div id="out">Enable javascript to see a live preview</div>
+          </div>
         </div>
-
-        <div id="out"></div>
-
-        <pre id="code"></pre>
 
         <div query type="comments" threadid="?threadid" userid content>
           <div class="comment">
             <div class="comment-heading">
                 <span>
                     <a class="commenter-username" href="http://user">%s</a>
-
                       <div class="content-inner">
                           <p>%s</p>
                       </div>
