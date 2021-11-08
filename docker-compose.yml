@@ -13,6 +13,8 @@ services:
     build:
       context: backend
       dockerfile: Dockerfile
+    extra_hosts:
+      - "host.docker.internal:172.101.0.1"
 #  forum-console:
 #    image: forum-console
 #    ports:
