@@ -7,9 +7,9 @@ RUN apk update && apk upgrade
 RUN apk add --no-cache go
 
 # Copy all files to docker image
-RUN mkdir -p /backend/forum-templates && mkdir -p /website/main
+RUN mkdir -p /backend/public && mkdir -p /website/main
 COPY main /backend/main/
-COPY forum-templates /backend/forum-templates/
+COPY public /backend/forum-templates/
 
 WORKDIR /backend/main
 RUN go mod tidy

@@ -15,7 +15,7 @@ func GetSQLFile(name string) string {
 }
 
 func getTemplateFile(file string) (*html.Node, error) {
-	content, err := ioutil.ReadFile("./forum-templates/" + file)
+	content, err := ioutil.ReadFile("./public/" + file)
 	if err != nil {
 		return nil, err
 	}

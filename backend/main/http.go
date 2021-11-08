@@ -163,17 +163,20 @@ func getFieldFromPost(field string, w http.ResponseWriter, req *http.Request) (s
 func isStaticFile(w http.ResponseWriter, req *http.Request) (bool, string) {
 	if strings.HasSuffix(req.URL.Path, ".css")  {
 		w.Header().Set("Content-Type", "text/css")
-		return true, "./forum-templates" + req.URL.Path
+		return true, "./public" + req.URL.Path
 	}
 	if strings.HasSuffix(req.URL.Path, ".js")  {
 		w.Header().Set("Content-Type", "application/javascript")
-		return true, "./forum-templates" + req.URL.Path
+		return true, "./public" + req.URL.Path
 	}
 	if strings.HasSuffix(req.URL.Path, ".ico") {
-		return true, "./forum-templates" + req.URL.Path
+		return true, "./public" + req.URL.Path
 	}
 	if strings.HasSuffix(req.URL.Path, ".html") {
-		return true, "./forum-templates" + req.URL.Path
+		return true, "./public" + req.URL.Path
+	}
+	if strings.HasSuffix(req.URL.Path, ".js.map") {
+		return true, "./public" + req.URL.Path
 	}
 	return false, ""
 }

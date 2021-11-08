@@ -1,0 +1,84 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background-size: cover;
+  background: linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6)) fixed;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  width: 80%;
+  margin: 0 auto 0 auto;
+}
+
+main {
+  margin: 1rem 0 1rem 0;
+  min-height: 100%;
+  background-color: white;
+  border: 0 none;
+  border-radius: 3px;
+  box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 0px;
+  background-color: lightslategrey;
+  padding: 1rem;
+}
+
+section {
+  padding: 1rem;
+}
+
+header a {
+  color: white;
+  padding-left: 1rem;
+  text-decoration: none;
+}
+
+section > ol {
+  padding-top: 1rem;
+}
+
+section > ol > li {
+  list-style-position: inside;
+  margin-left: 1rem;
+}
+
+footer {
+  padding: 1rem;
+}
+
+.comment-form {
+  padding-left: 1rem;
+}
+
+.post {
+  margin-top: 0.5rem;
+  color: grey;
+}
+.post a {
+  text-decoration: none;
+}
+.post a:link {
+  color: black;
+}
+.post a:visited {
+  color: grey;
+}
+.post-subtext,
+.post-subtext-page {
+  font-size: small;
+}
+
+.post-subtext {
+  margin-left: 1.5rem;
+}
