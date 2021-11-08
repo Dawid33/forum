@@ -32,6 +32,7 @@ func startHttpServer() {
 	}
 	fmt.Printf("Attempting to create connection on (%s, port %d)\n", host, PORT)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", host, PORT), mux))
+	fmt.Println("Success!\n")
 }
 
 // Function that handles all regular requests
