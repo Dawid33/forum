@@ -93,15 +93,16 @@ func getComments(db *sql.DB, whereClause string) ([]Comment, error) {
 }
 
 func connectToDB() *sql.DB {
-	host := os.Getenv("DB_HOST")
-	if host == "" {
-		host = "localhost"
+	dbHost := os.Getenv("DB_HOST")
+	if dbHost == "" {
+		dbHost = "localhost"
 	}
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	fmt.Println(dbHost)
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", dbHost, port, user, password, dbname)
 	for {
 		conn, err := sql.Open("postgres", psqlconn)
-		if err != nil {
-			log.Println("Cannot connect to database, trying again...")
+		if err != nil || conn.Ping() != nil{
+			log.Println("Cannot connect to database. Trying again...")
 			time.Sleep(time.Second * 2)
 		} else {
 			return conn
