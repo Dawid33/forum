@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -26,13 +25,13 @@ func startHttpServer() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", fileSendHandler)
+	/*
 	host := os.Getenv("HOST")
 	if host == "" {
 		host = "localhost"
 	}
-	fmt.Printf("Attempting to create connection on (%s, port %d)\n", host, PORT)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", host, PORT), mux))
-	fmt.Println("Success!\n")
+	*/
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", PORT), mux))
 }
 
 // Function that handles all regular requests

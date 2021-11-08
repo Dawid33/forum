@@ -10,12 +10,10 @@ services:
       - db:database
     environment:
       DB_HOST: database
-      HOST: host.docker.internal
+      HOST: localhost
     build:
       context: backend
       dockerfile: Dockerfile
-    extra_hosts:
-      - "host.docker.internal:172.17.0.1"
 #  forum-console:
 #    image: forum-console
 #    ports:
