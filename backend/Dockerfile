@@ -9,7 +9,7 @@ RUN apk add --no-cache go
 # Copy all files to docker image
 RUN mkdir -p /backend/public && mkdir -p /website/main
 COPY main /backend/main/
-COPY public /backend/forum-templates/
+COPY public /backend/public/
 
 WORKDIR /backend/main
 RUN go mod tidy
