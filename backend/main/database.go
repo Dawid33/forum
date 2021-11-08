@@ -38,6 +38,7 @@ func getThreads(db *sql.DB, whereClause string) ([]Thread, error) {
 
 	rows, err := db.Query(query)
 	if err != nil {
+		PrintError(err)
 		return []Thread{}, nil
 	}
 	var output []Thread
@@ -97,7 +98,6 @@ func connectToDB() *sql.DB {
 	if dbHost == "" {
 		dbHost = "localhost"
 	}
-	fmt.Println(dbHost)
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", dbHost, port, user, password, dbname)
 	for {
 		conn, err := sql.Open("postgres", psqlconn)

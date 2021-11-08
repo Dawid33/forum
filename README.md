@@ -5,7 +5,9 @@ sudo docker compose up
 ```
 
 ## Notes
-When running `sudo docker compose run` don't forget to add `--service-ports` or else docker will not publish ports.
+Only allow connection to the docker instance from 127.0.0.1 \
+`iptables -I DOCKER-USER -i enp1s0 ! -s 127.0.0.1 -j DROP`
 
 ## Documentation W.I.P
 <attiribute> <query>
+

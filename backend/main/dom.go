@@ -108,9 +108,17 @@ func parseAttributes(node *html.Node, req *http.Request) (Query, error) {
 			output.queryType = DatabaseQuery
 		default:
 			// If the requested data starts with ?, it must come from the url.
-			if strings.HasPrefix(attr.Key, "?") || strings.HasPrefix(attr.Val, "?") {
+			if strings.HasPrefix(attr.Key, "?") {
 				for _, x := range validQueries {
-					if "?" + x == attr.Key || "?" + x == attr.Val && req.URL.Query().Has(x){
+					if "?" + x == attr.Key && req.URL.Query().Has(x){
+						parameter := QueryParameter{key: attr.Key, value: req.URL.Query().Get(x)}
+						output.params = append(output.params, parameter)
+						break
+					}
+				}
+			} else if strings.HasPrefix(attr.Val, "?") {
+				for _, x := range validQueries {
+					if "?" + x == attr.Val && req.URL.Query().Has(x){
 						parameter := QueryParameter{key: attr.Key, value: req.URL.Query().Get(x)}
 						output.params = append(output.params, parameter)
 						break
@@ -150,6 +158,15 @@ func fulfillQuery(node *html.Node, query Query) error {
 				category = x.value
 			case "template":
 				template = x.value
+			case "threadid":
+				if x.value != "" {
+					threadid = x.value
+				} else {
+					requestedData = append(requestedData, QueryParameter{
+						key: x.key,
+						value: x.value,
+					})
+				}
 			case "?threadid":
 				requestedData = append(requestedData, QueryParameter{
 					key: x.key,
@@ -191,15 +208,13 @@ func fulfillQuery(node *html.Node, query Query) error {
 				var err error = nil
 				if category != "" {
 					categoryQuery := fmt.Sprintf("WHERE posts.category = '%s'", category)
-					db := connectToDB()
+
 					threads, err = getThreads(db, categoryQuery)
-					db.Close()
+
 				} else {
-					db := connectToDB()
 					threads, err = getThreads(db, "")
-					db.Close()
 				}
-				if err != nil {
+				if err != nil || len(threads) == 0{
 					PrintError(err)
 					return err
 				}
@@ -232,10 +247,13 @@ func fulfillQuery(node *html.Node, query Query) error {
 					newContent += newItem
 				}
 			case "comments":
-				db := connectToDB()
-				query := fmt.Sprintf("WHERE comments.threadid = %s", threadid)
-				comments, err := getComments(db, query)
-				db.Close()
+				if threadid == "" {
+					err := errors.New("no thread ID")
+					fmt.Println(err)
+					return err
+				}
+				commentQuery := fmt.Sprintf("WHERE comments.threadid = %s", threadid)
+				comments, err := getComments(db, commentQuery)
 				if err != nil {
 					PrintError(err)
 					return err

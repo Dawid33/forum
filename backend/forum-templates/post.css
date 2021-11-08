@@ -1,0 +1,18 @@
+.comment-form {
+    margin-top: 1rem;
+}
+
+.comment-heading {
+  font-size: small;
+}
+
+.commenter-username {
+  text-decoration: none;
+}
+
+.commenter-username:visited {
+  color: black;
+}
+.commenter-username:link {
+  color: grey;
+}

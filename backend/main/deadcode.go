@@ -25,7 +25,6 @@ func serveIndexFile(w http.ResponseWriter, req *http.Request) {
 
 	_, err = fmt.Fprintf(w, htmlToString(doc))
 	CheckError(err)
-	_ = db.Close()
 }
 
 func serveThreadFile (w http.ResponseWriter, req *http.Request) {

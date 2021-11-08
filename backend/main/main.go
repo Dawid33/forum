@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"embed"
 	"fmt"
 	_ "github.com/lib/pq"
@@ -11,18 +12,17 @@ import (
 //go:embed sql/forumCreateSchema.sql
 //go:embed sql/otherCreateSchema.sql
 var f embed.FS
+var db *sql.DB
 
 func main() {
 	// Connect to database
-	db := connectToDB()
+	db = connectToDB()
 	var schemas = []string{
 		"forum",
 	}
-	fmt.Println("Deleting all schemas for clean slate...")
+	//fmt.Println("Deleting all schemas for clean slate...")
 	//DropAllSchemas(db, schemas)
 	CreateMissingSchemas(db, schemas)
-	err := db.Close()
-	CheckError(err)
 	startHttpServer()
 }
 

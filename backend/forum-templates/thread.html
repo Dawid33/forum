@@ -5,35 +5,38 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hacker news</title>
-    <link rel="stylesheet" href="base.css" />
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="post.css" />
   </head>
 
   <body>
     <header>
       <a href="/">L337 C0D3R F0RUM</a>
-      <a href="/">new</a>
-      <a href="/">past</a>
-      <a href="/">comments</a>
-      <a href="/">ask</a>
-      <a href="/">show</a>
-      <a href="/">jobs</a>
-      <a href="/">submit</a>
     </header>
 
     <main>
-      <div query ?threadid ?threadid ?threadid>
+      <div class="comment-form" query ?threadid ?threadid ?threadid>
         <form method="post" action="/post-comment">
           <input type="hidden" name="thread" value="%s" />
           <input type="hidden" name="parentId" value="%s" />
           <input type="hidden" name="goto" value="thread?threadid=%s" />
-          <textarea name="text" rows="6" cols="60">Default Comment</textarea>
+          <textarea name="text" rows="6" cols="60"></textarea>
           <br /><br />
           <input type="submit" value="add comment" />
         </form>
       </div>
-
-      <div query type="comments" threadid="?threadid" content>
-        <h3>%s</h3>
+      
+      <div query type="comments" threadid="?threadid" userid content>
+        <div class="comment">
+          <div class="comment-heading">
+              <span>
+                  <a class="commenter-username" href="http://user">%s</a>
+                      <div class="content-inner">
+                          <p>%s</p>
+                      </div>
+                  </div>
+              </span>
+          </div>
       </div>
     </main>
   </body>

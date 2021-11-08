@@ -14,18 +14,23 @@ func GetSQLFile(name string) string {
 	return string(data)
 }
 
-func getTemplateFile(file string) *html.Node {
+func getTemplateFile(file string) (*html.Node, error) {
 	content, err := ioutil.ReadFile("./forum-templates/" + file)
-	Panic(err)
+	if err != nil {
+		return nil, err
+	}
 	doc, err := html.Parse(bytes.NewReader(content))
-	Panic(err)
-	return doc
+	if err != nil {
+		return nil, err
+	}
+	return doc, nil
 }
 
 func getSubTemplateFile(file string) string {
-	doc := getTemplateFile(file)
+	doc, err := getTemplateFile(file)
+	Panic(err)
 	// Parsing html adds stuff that doesn't exist in the file.
-	doc, err := getNodeByTag(doc, "body")
+	doc, err = getNodeByTag(doc, "body")
 	Panic(err)
 	return getContentFromNode(doc)
 }

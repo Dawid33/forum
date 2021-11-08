@@ -4,7 +4,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Hacker news</title>
-	<link rel="stylesheet" href="base.css" />
+	<link rel="stylesheet" href="index.css" />
 	<script query type="threads" category="default" threadid>
 		<link rel="prefetch" href="thread?threadid=%s">
 	</script>
@@ -14,13 +14,6 @@
 	<body>
 		<header>
 			<a href="/">L337 C0D3R F0RUM</a>
-			<a href="/">new</a>
-			<a href="/">past</a>
-			<a href="/">comments</a>
-			<a href="/">ask</a>
-			<a href="/">show</a>
-			<a href="/">jobs</a>
-			<a href="/">submit</a>
 		</header>
 
 		<main>
@@ -33,11 +26,11 @@
 			</form>
 
 			<ol>
-				<div query type="threads" category="default" threadid title userid threadid >
+				<div query type="threads" category="default" threadid title userid >
 					<li class="post">
-						<a href="thread?id=%s"><span>%s</span></a>
+						<a href="thread?threadid=%s"><span>%s</span></a>
 						<br/>
-						<span class="post-subtext">400 points by %s 2 hours age | hide | <a href="thread?threadid=%s">198 comments</a></span>
+						<span class="post-subtext">By %s</span>
 					</li>
 				</div>
 			</ol>
