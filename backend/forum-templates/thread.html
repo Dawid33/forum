@@ -15,6 +15,12 @@
     </header>
 
     <main>
+      <div query type="threads" threadid="?threadid" title content>
+        <h2>%s</h2>
+        <br>
+        <p>%s</p>
+      </div>
+
       <div class="comment-form" query ?threadid ?threadid ?threadid>
         <form method="post" action="/post-comment">
           <input type="hidden" name="thread" value="%s" />

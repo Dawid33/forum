@@ -173,9 +173,6 @@ func fulfillQuery(node *html.Node, query Query) error {
 					value: x.value,
 				})
 			default:
-				if x.value != "" && x.key == "threadid" {
-					threadid = x.value
-				}
 				// If there is no key / value pair, must be the requested information
 				// Or if it starts with ?, the information must come from url
 				if x.value == "" {
@@ -208,9 +205,10 @@ func fulfillQuery(node *html.Node, query Query) error {
 				var err error = nil
 				if category != "" {
 					categoryQuery := fmt.Sprintf("WHERE posts.category = '%s'", category)
-
 					threads, err = getThreads(db, categoryQuery)
-
+				} else if threadid != "" {
+					threadQuery := fmt.Sprintf("WHERE posts.threadID = '%s'", threadid)
+					threads, err = getThreads(db, threadQuery)
 				} else {
 					threads, err = getThreads(db, "")
 				}
