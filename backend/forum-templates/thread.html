@@ -6,44 +6,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hacker news</title>
     <link rel="stylesheet" href="index.css" />
-    <link rel="stylesheet" href="post.css" />
+    <link rel="stylesheet" href="thread.css" />
   </head>
 
   <body>
-    <header>
-      <a href="/">L337 C0D3R F0RUM</a>
-    </header>
-
     <main>
-      <div query type="threads" threadid="?threadid" title content>
-        <h2>%s</h2>
-        <br>
-        <p>%s</p>
-      </div>
+      <header>
+        <a href="/">L337 C0D3R F0RUM</a>
+      </header>
+      <section>
+        <div query type="threads" threadid="?threadid" title content>
+          <h2 id="title">%s</h2>
+          <br>
+          <p id="post">%s</p>
+        </div>
 
-      <div class="comment-form" query ?threadid ?threadid ?threadid>
-        <form method="post" action="/post-comment">
-          <input type="hidden" name="thread" value="%s" />
-          <input type="hidden" name="parentId" value="%s" />
-          <input type="hidden" name="goto" value="thread?threadid=%s" />
-          <textarea name="text" rows="6" cols="60"></textarea>
-          <br /><br />
-          <input type="submit" value="add comment" />
-        </form>
-      </div>
-      
-      <div query type="comments" threadid="?threadid" userid content>
-        <div class="comment">
-          <div class="comment-heading">
-              <span>
-                  <a class="commenter-username" href="http://user">%s</a>
-                      <div class="content-inner">
-                          <p>%s</p>
-                      </div>
-                  </div>
-              </span>
-          </div>
-      </div>
+        <div query ?threadid ?threadid ?threadid>
+          <form class="comment-form" method="post" action="/post-comment">
+            <input type="hidden" name="thread" value="%s" />
+            <input type="hidden" name="parentId" value="%s" />
+            <input type="hidden" name="goto" value="thread?threadid=%s" />
+            <textarea name="text" rows="6" cols="60"></textarea>
+            <br /><br />
+            <input type="submit" value="add comment" />
+          </form>
+        </div>
+
+        <div query type="comments" threadid="?threadid" userid content>
+          <div class="comment">
+            <div class="comment-heading">
+                <span>
+                    <a class="commenter-username" href="http://user">%s</a>
+                        <div class="content-inner">
+                            <p>%s</p>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+      </section>
     </main>
   </body>
 </html>
