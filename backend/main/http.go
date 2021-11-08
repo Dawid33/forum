@@ -30,7 +30,7 @@ func startHttpServer() {
 	if host == "" {
 		host = "localhost"
 	}
-	fmt.Printf("Attemptint to create connection on %s:%d\n", host, PORT)
+	fmt.Printf("Attempting to create connection on (%s, port %d)\n", host, PORT)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", host, PORT), mux))
 }
 

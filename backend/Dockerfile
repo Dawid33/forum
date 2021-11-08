@@ -12,6 +12,7 @@ COPY main /backend/main/
 COPY forum-templates /backend/forum-templates/
 
 WORKDIR /backend/main
+RUN go mod tidy
 RUN go build -o backend && mv backend ..
 WORKDIR /backend
 CMD ./backend
