@@ -29,6 +29,6 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_PASSWORD: test
     volumes:
-      - ./backend/postgresdb:/var/lib/postgresql/data
+      - ./forum/forum/backend/postgresdb:/var/lib/postgresql/data
     ports:
       - "5432:5432"

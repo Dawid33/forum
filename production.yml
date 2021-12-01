@@ -12,7 +12,7 @@ services:
       DB_HOST: database
       HOST: localhost
     build:
-      context: backend
+      context: forum
       dockerfile: Dockerfile
 #  forum-console:
 #    image: forum-console
@@ -31,6 +31,6 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_PASSWORD: test
     volumes:
-      - ./backend/postgresdb:/var/lib/postgresql/data
+      - ./forum/backend/postgresdb:/var/lib/postgresql/data
     expose:
       - 5432
